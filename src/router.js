@@ -47,7 +47,7 @@ export async function router(request, env) {
       const token = await getAccessToken(env);
 
       const response = await fetch(
-        "https://graph.microsoft.com/v1.0/users/ppatel@city-mtg.com/messages?$top=1&$select=id,subject,from,receivedDateTime,isRead,bodyPreview",
+        "https://graph.microsoft.com/v1.0/users/ppatel@city-mtg.com/messages?$top=1&$select=id,subject,from,receivedDateTime,isRead,bodyPreview,body",
         {
           headers: {
             Authorization: `Bearer ${token.access_token}`
