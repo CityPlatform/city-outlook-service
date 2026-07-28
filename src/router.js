@@ -99,9 +99,20 @@ if (request.method === "POST" && url.pathname === "/analyze-email") {
   try {
     const data = await request.json();
 
-    return Response.json({
-      received: data
-    });
+    const aiResponse = await fetch(
+      "https://city-ai-core.piyushpatel1211.workers.dev/",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+      }
+    );
+
+    const result = await aiResponse.json();
+
+    return Response.json(result);
 
   } catch (err) {
     return Response.json(
