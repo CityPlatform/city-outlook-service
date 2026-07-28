@@ -94,13 +94,15 @@ export async function router(request, env) {
     }
   }
 
-  // Analyze Email
+// Analyze Email
 if (request.method === "POST" && url.pathname === "/analyze-email") {
+
   try {
+
     const data = await request.json();
 
     const aiResponse = await fetch(
-      "https://city-ai-core.piyushpatel1211.workers.dev/",
+      "https://city-ai-core.piyushpatel1211.workers.dev/classify-email",
       {
         method: "POST",
         headers: {
@@ -110,21 +112,28 @@ if (request.method === "POST" && url.pathname === "/analyze-email") {
       }
     );
 
-    const result = await aiResponse.json();
+    const rawResponse = await aiResponse.text();
 
-    return Response.json(result);
+    return Response.json({
+      success: true,
+      status: aiResponse.status,
+      raw: rawResponse
+    });
 
   } catch (err) {
+
     return Response.json(
       {
         success: false,
         error: err.message
       },
       {
-        status: 400
+        status: 500
       }
     );
+
   }
+
 }
   // Default Route
   return Response.json(
