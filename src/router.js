@@ -36,7 +36,10 @@ export async function router(request, env) {
     return Response.json(token);
   }
 
- if (request.method === "POST" && url.pathname === "/sync-emails") {
+ if (
+  (request.method === "GET" || request.method === "POST") &&
+  url.pathname === "/sync-emails"
+) {
   const token = await getAccessToken(env);
 
   const response = await fetch(
