@@ -68,7 +68,7 @@ export async function router(request, env) {
 
       return Response.json({
         success: true,
-       email: {
+     email: {
   id: email.id,
   subject: email.subject,
   from: email.from.emailAddress.name,
@@ -76,7 +76,7 @@ export async function router(request, env) {
   receivedDateTime: email.receivedDateTime,
   isRead: email.isRead,
   bodyPreview: email.bodyPreview,
-  body: email.body
+  body: email.body.content
 }
       });
 
