@@ -51,9 +51,16 @@ export async function router(request, env) {
     }
   );
 
+ try {
   const data = await response.json();
 
   return Response.json(data);
+} catch (err) {
+  return Response.json({
+    error: err.message,
+    stack: err.stack
+  });
+}
 }
 
   return Response.json(
