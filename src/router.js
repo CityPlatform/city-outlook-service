@@ -68,15 +68,16 @@ export async function router(request, env) {
 
       return Response.json({
         success: true,
-        email: {
-          id: email.id,
-          subject: email.subject,
-          from: email.from.emailAddress.name,
-          address: email.from.emailAddress.address,
-          receivedDateTime: email.receivedDateTime,
-          isRead: email.isRead,
-          bodyPreview: email.bodyPreview
-        }
+       email: {
+  id: email.id,
+  subject: email.subject,
+  from: email.from.emailAddress.name,
+  address: email.from.emailAddress.address,
+  receivedDateTime: email.receivedDateTime,
+  isRead: email.isRead,
+  bodyPreview: email.bodyPreview,
+  body: email.body
+}
       });
 
     } catch (err) {
