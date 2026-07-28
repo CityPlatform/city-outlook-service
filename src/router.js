@@ -36,12 +36,22 @@ export async function router(request, env) {
     return Response.json(token);
   }
 
-  if (request.method === "POST" && url.pathname === "/sync-emails") {
-    return Response.json({
-      success: true,
-      message: "Outlook Service is ready."
-    });
-  }
+ if (request.method === "POST" && url.pathname === "/sync-emails") {
+  const token = await getAccessToken(env);
+
+  const response = await fetch(
+    "https://graph.microsoft.com/v1.0/users/ppatel@city-mtg.com/messages?$top=10&$select=id,subject,from,receivedDateTime,isRead",
+    {
+      headers: {
+        Authorization: `Bearer ${token.access_token}`
+      }
+    }
+  );
+
+  const data = await response.json();
+
+  return Response.json(data);
+}
 
   return Response.json(
     {
