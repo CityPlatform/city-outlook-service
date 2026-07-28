@@ -1,4 +1,3 @@
-
 export async function router(request, env) {
   const url = new URL(request.url);
 
@@ -9,6 +8,14 @@ export async function router(request, env) {
       version: "1.0.0",
       status: "healthy",
       timestamp: new Date().toISOString()
+    });
+  }
+
+  // Outlook Sync
+  if (request.method === "POST" && url.pathname === "/sync-emails") {
+    return Response.json({
+      success: true,
+      message: "Outlook Service is ready."
     });
   }
 
