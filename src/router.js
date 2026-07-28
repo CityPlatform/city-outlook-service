@@ -94,6 +94,27 @@ export async function router(request, env) {
     }
   }
 
+  // Analyze Email
+if (request.method === "POST" && url.pathname === "/analyze-email") {
+  try {
+    const data = await request.json();
+
+    return Response.json({
+      received: data
+    });
+
+  } catch (err) {
+    return Response.json(
+      {
+        success: false,
+        error: err.message
+      },
+      {
+        status: 400
+      }
+    );
+  }
+}
   // Default Route
   return Response.json(
     {
