@@ -1,5 +1,5 @@
 async function getAccessToken(env) {
-  const tokenUrl = `https://login.microsoftonline.com/${env.GRAPH_TENANT_ID}/oauth2/v2.0/token`;
+  const tokenUrl = `"https://graph.microsoft.com/v1.0/users/ppatel@city-mtg.com/messages?$top=1&$select=id,subject,from,receivedDateTime,isRead,body,bodyPreview",`;
 
   const body = new URLSearchParams({
     client_id: env.GRAPH_CLIENT_ID,
