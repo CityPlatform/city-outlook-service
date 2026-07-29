@@ -21,6 +21,7 @@ export async function getLatestEmail(token) {
 // Ensures a category name exists in the mailbox's Master Category List
 // with the correct color. Required for the color to actually show in Outlook —
 // just applying a category name to a message does not create a color mapping.
+// If the category already exists with a different color, it is corrected.
 export async function ensureCategoryRegistered(token, categoryName) {
   const color = CATEGORY_COLORS[categoryName] ?? "preset12"; // default Gray
 
@@ -35,7 +36,27 @@ export async function ensureCategoryRegistered(token, categoryName) {
   const existing = (list.value ?? []).find(c => c.displayName === categoryName);
 
   if (existing) {
-    return existing;
+    if (existing.color === color) {
+      return existing;
+    }
+
+    const updateResponse = await fetch(
+      `https://graph.microsoft.com/v1.0/users/${MAILBOX}/outlook/masterCategories/${existing.id}`,
+      {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token.access_token}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ color })
+      }
+    );
+
+    if (!updateResponse.ok) {
+      return existing; // keep old value if the update failed, don't break the pipeline
+    }
+
+    return { ...existing, color };
   }
 
   const createResponse = await fetch(
