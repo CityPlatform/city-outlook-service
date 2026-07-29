@@ -7,6 +7,7 @@ import { processLatestRoute } from "./routes/processLatest.js";
 import { debugCategoriesRoute } from "./routes/debugCategories.js";
 import { fixCategoryColorsRoute } from "./routes/fixCategoryColors.js";
 import { listEmailsRoute } from "./routes/listEmails.js";
+import { unreadCountRoute } from "./routes/unreadCount.js";
 
 export async function router(request, env) {
   const url = new URL(request.url);
@@ -48,6 +49,10 @@ export async function router(request, env) {
 
   if (request.method === "GET" && url.pathname === "/list-emails") {
     return listEmailsRoute(request, env);
+  }
+
+  if (request.method === "GET" && url.pathname === "/unread-count") {
+    return unreadCountRoute(env);
   }
 
   return Response.json(
