@@ -33,7 +33,9 @@ export async function processLatestRoute(env) {
 
     const classifyResult = await classifyEmailViaAiCore(env, {
       subject: email.subject,
-      body: email.body.content
+      body: email.body.content,
+      from: email.from.emailAddress.address,
+      categories: email.categories ?? []
     });
 
     if (!classifyResult.data || classifyResult.data.success !== true) {
