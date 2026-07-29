@@ -5,6 +5,7 @@ import { analyzeEmailRoute } from "./routes/analyzeEmail.js";
 import { applyCategoryRoute } from "./routes/applyCategory.js";
 import { processLatestRoute } from "./routes/processLatest.js";
 import { debugCategoriesRoute } from "./routes/debugCategories.js";
+import { fixCategoryColorsRoute } from "./routes/fixCategoryColors.js";
 
 export async function router(request, env) {
   const url = new URL(request.url);
@@ -38,6 +39,10 @@ export async function router(request, env) {
 
   if (request.method === "GET" && url.pathname === "/debug-categories") {
     return debugCategoriesRoute(env);
+  }
+
+  if (request.method === "POST" && url.pathname === "/fix-category-colors") {
+    return fixCategoryColorsRoute(env);
   }
 
   return Response.json(
