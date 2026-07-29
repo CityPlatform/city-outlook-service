@@ -8,6 +8,7 @@ import { debugCategoriesRoute } from "./routes/debugCategories.js";
 import { fixCategoryColorsRoute } from "./routes/fixCategoryColors.js";
 import { listEmailsRoute } from "./routes/listEmails.js";
 import { unreadCountRoute } from "./routes/unreadCount.js";
+import { debugMessageRoute } from "./routes/debugMessage.js";
 
 export async function router(request, env) {
   const url = new URL(request.url);
@@ -53,6 +54,10 @@ export async function router(request, env) {
 
   if (request.method === "GET" && url.pathname === "/unread-count") {
     return unreadCountRoute(request, env);
+  }
+
+  if (request.method === "GET" && url.pathname === "/debug-message") {
+    return debugMessageRoute(request, env);
   }
 
   return Response.json(
