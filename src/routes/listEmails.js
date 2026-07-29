@@ -1,16 +1,19 @@
 import { MAILBOX } from "../config/constants.js";
 import { getAccessToken } from "../services/graphAuth.js";
 
-// GET /list-emails?limit=50 — unread messages, for batch processing.
+// GET /list-emails?limit=50&days=30 — unread messages from the last N days (default 30).
 export async function listEmailsRoute(request, env) {
   try {
     const url = new URL(request.url);
     const limit = Math.min(Number(url.searchParams.get("limit")) || 50, 100);
+    const days = Number(url.searchParams.get("days")) || 30;
+
+    const since = new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString();
 
     const token = await getAccessToken(env);
 
     const response = await fetch(
-      `https://graph.microsoft.com/v1.0/users/${MAILBOX}/messages?$filter=isRead eq false&$top=${limit}&$select=id,subject,from,receivedDateTime,isRead,bodyPreview,body,categories`,
+      `https://graph.microsoft.com/v1.0/users/${MAILBOX}/messages?$filter=isRead eq false and receivedDateTime ge ${since}&$top=${limit}&$select=id,subject,from,receivedDateTime,isRead,bodyPreview,body,categories`,
       {
         headers: {
           Authorization: `Bearer ${token.access_token}`,

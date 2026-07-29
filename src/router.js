@@ -52,7 +52,7 @@ export async function router(request, env) {
   }
 
   if (request.method === "GET" && url.pathname === "/unread-count") {
-    return unreadCountRoute(env);
+    return unreadCountRoute(request, env);
   }
 
   return Response.json(
