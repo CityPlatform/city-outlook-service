@@ -1,25 +1,28 @@
-# city-outlook-service
+import { MAILBOX } from "../config/constants.js";
+import { getAccessToken } from "../services/graphAuth.js";
 
-Outlook / Microsoft 365 integration for City Mortgage AI Platform.
+// GET /debug-message?id=<messageId> — ground-truth check of a single message's
+// current isRead/categories, straight from Graph, bypassing any Outlook UI cache.
+export async function debugMessageRoute(request, env) {
+  try {
+    const url = new URL(request.url);
+    const id = url.searchParams.get("id");
 
-## Endpoints
-- GET  /health
-- GET  /test-auth
-- GET|POST /sync-emails
-- POST /analyze-email   (proxies to city-ai-core via service binding)
+    if (!id) {
+      return Response.json({ success: false, error: "id query param required" }, { status: 400 });
+    }
 
-## Secrets
-- GRAPH_TENANT_ID
-- GRAPH_CLIENT_ID
-- GRAPH_CLIENT_SECRET
+    const token = await getAccessToken(env);
 
-## Bindings
-- CITY_AI_CORE (service binding to city-ai-core Worker)
+    const response = await fetch(
+      `https://graph.microsoft.com/v1.0/users/${MAILBOX}/messages/${id}?$select=id,subject,isRead,categories,receivedDateTime`,
+      { headers: { Authorization: `Bearer ${token.access_token}` } }
+    );
 
-## Structure
-See platform spec: config / routes / services / models / helpers / tests
+    const data = await response.json();
 
-## Not yet built (Sprint 2)
-- Writing categories back to Outlook is implemented in services/graphMail.js
-  (updateEmailCategories) but not yet wired to a route. Sprint 2 adds the
-  route + orchestration to auto-tag inbox emails.
+    return Response.json({ success: response.ok, status: response.status, message: data });
+  } catch (err) {
+    return Response.json({ success: false, error: err.message }, { status: 500 });
+  }
+}
