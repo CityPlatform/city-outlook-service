@@ -1,5 +1,6 @@
 import { MAILBOX } from "../config/constants.js";
 import { getAccessToken } from "../services/graphAuth.js";
+import { extractHeaderSignals } from "../helpers/emailHeaders.js";
 
 // GET /list-emails?limit=50&days=30 — unread messages from the last N days (default 30).
 export async function listEmailsRoute(request, env) {
@@ -13,7 +14,7 @@ export async function listEmailsRoute(request, env) {
     const token = await getAccessToken(env);
 
     const response = await fetch(
-      `https://graph.microsoft.com/v1.0/users/${MAILBOX}/messages?$filter=isRead eq false and receivedDateTime ge ${since}&$top=${limit}&$select=id,subject,from,receivedDateTime,isRead,bodyPreview,body,categories`,
+      `https://graph.microsoft.com/v1.0/users/${MAILBOX}/messages?$filter=isRead eq false and receivedDateTime ge ${since}&$top=${limit}&$select=id,subject,from,receivedDateTime,isRead,bodyPreview,body,categories,internetMessageHeaders`,
       {
         headers: {
           Authorization: `Bearer ${token.access_token}`,
@@ -32,7 +33,8 @@ export async function listEmailsRoute(request, env) {
       receivedDateTime: email.receivedDateTime,
       isRead: email.isRead,
       body: email.body?.content ?? "",
-      categories: email.categories ?? []
+      categories: email.categories ?? [],
+      headers: extractHeaderSignals(email.internetMessageHeaders ?? [])
     }));
 
     return Response.json({

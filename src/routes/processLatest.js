@@ -1,6 +1,7 @@
 import { getAccessToken } from "../services/graphAuth.js";
 import { getLatestEmail, ensureCategoryRegistered, updateEmailMessage } from "../services/graphMail.js";
 import { classifyEmailViaAiCore } from "../services/aiCore.js";
+import { extractHeaderSignals } from "../helpers/emailHeaders.js";
 
 // POST /process-latest
 // Orchestrates: sync -> classify -> tag -> mark processed
@@ -35,7 +36,8 @@ export async function processLatestRoute(env) {
       subject: email.subject,
       body: email.body.content,
       from: email.from.emailAddress.address,
-      categories: email.categories ?? []
+      categories: email.categories ?? [],
+      headers: extractHeaderSignals(email.internetMessageHeaders ?? [])
     });
 
     if (!classifyResult.data || classifyResult.data.success !== true) {

@@ -3,7 +3,7 @@ import { CATEGORY_COLORS } from "../config/categoryColors.js";
 
 export async function getLatestEmail(token) {
   const response = await fetch(
-    `https://graph.microsoft.com/v1.0/users/${MAILBOX}/messages?$top=1&$select=id,subject,from,receivedDateTime,isRead,bodyPreview,body,categories`,
+    `https://graph.microsoft.com/v1.0/users/${MAILBOX}/messages?$top=1&$select=id,subject,from,receivedDateTime,isRead,bodyPreview,body,categories,internetMessageHeaders`,
     {
       headers: {
         Authorization: `Bearer ${token.access_token}`,
