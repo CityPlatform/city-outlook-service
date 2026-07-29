@@ -11,7 +11,12 @@ export async function listEmailsRoute(request, env) {
 
     const response = await fetch(
       `https://graph.microsoft.com/v1.0/users/${MAILBOX}/messages?$filter=isRead eq false&$top=${limit}&$select=id,subject,from,receivedDateTime,isRead,bodyPreview,body,categories`,
-      { headers: { Authorization: `Bearer ${token.access_token}` } }
+      {
+        headers: {
+          Authorization: `Bearer ${token.access_token}`,
+          Prefer: 'outlook.body-content-type="text"'
+        }
+      }
     );
 
     const data = await response.json();
